@@ -10,39 +10,47 @@ function setStatus(text, type = "") {
   if (type) statusEl.classList.add(type);
 }
 
-const API_BASE = ""; // 같은 서버에서 서비스하므로 빈 문자열이면 됨
+// Vercel 정적 배포에서는 서버(API)가 없으므로
+// 브라우저 localStorage에만 저장하는 로컬 모드로 동작하게 변경
+const STORAGE_KEY = "water-or-fire-counts";
 
-async function fetchCounts() {
+function loadLocalCounts() {
   try {
-    const res = await fetch(`${API_BASE}/api/counts`);
-    if (!res.ok) throw new Error("failed");
-    const data = await res.json();
-    fireCountEl.textContent = data.fire ?? 0;
-    waterCountEl.textContent = data.water ?? 0;
-    setStatus("서버 연결 완료! 버튼을 눌러보세요 🔥💧", "ok");
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { fire: 0, water: 0 };
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed.fire === "number" &&
+      typeof parsed.water === "number"
+    ) {
+      return parsed;
+    }
   } catch (e) {
     console.error(e);
-    setStatus("서버에 연결할 수 없어요. 서버가 켜져 있는지 확인하세요.", "error");
+  }
+  return { fire: 0, water: 0 };
+}
+
+function saveLocalCounts(counts) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(counts));
+  } catch (e) {
+    console.error(e);
   }
 }
 
-async function increment(type) {
-  try {
-    const res = await fetch(`${API_BASE}/api/increment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ type }),
-    });
-    if (!res.ok) throw new Error("failed");
-    const data = await res.json();
-    fireCountEl.textContent = data.fire ?? 0;
-    waterCountEl.textContent = data.water ?? 0;
-  } catch (e) {
-    console.error(e);
-    setStatus("증가 요청 실패: 서버 상태를 확인하세요.", "error");
-  }
+let counts = loadLocalCounts();
+
+function renderCounts() {
+  fireCountEl.textContent = counts.fire;
+  waterCountEl.textContent = counts.water;
+}
+
+function increment(type) {
+  if (type !== "fire" && type !== "water") return;
+  counts[type] += 1;
+  saveLocalCounts(counts);
+  renderCounts();
 }
 
 function setupButtonHandlers() {
@@ -51,11 +59,8 @@ function setupButtonHandlers() {
 }
 
 window.addEventListener("load", () => {
-  setStatus("서버 연결 시도 중...");
+  setStatus("로컬 모드로 실행 중입니다. 이 브라우저에서만 카운트가 저장돼요.", "ok");
+  renderCounts();
   setupButtonHandlers();
-  fetchCounts();
-  // 여러 기기 동기화를 위해 주기적으로 값 재요청 (1.5초마다)
-  setInterval(fetchCounts, 1500);
 });
-
 
