@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WATER OR FIRE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1>WATER OR FIRE</h1>
+      <p class="subtitle">오른쪽은 물, 왼쪽은 불! 전 세계가 함께 누르는 버튼 전쟁 🔥💧</p>
+
+      <div class="buttons-wrapper">
+        <button id="fire-btn" class="side-btn fire">
+          <span class="label">FIRE</span>
+          <span id="fire-count" class="count">0</span>
+        </button>
+
+        <button id="water-btn" class="side-btn water">
+          <span class="label">WATER</span>
+          <span id="water-count" class="count">0</span>
+        </button>
+      </div>
+
+      <p class="info">
+        이 숫자는 <strong>모든 기기에서 공유</strong>됩니다.<br />
+        다른 컴퓨터, 핸드폰에서 들어와서 눌러도 같이 올라가요.
+      </p>
+
+      <div class="status" id="status">서버 연결 준비 중...</div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+  </html>
+
+

@@ -1,0 +1,16 @@
+{
+  "name": "water-or-fire-game",
+  "version": "1.0.0",
+  "description": "Simple WATER OR FIRE counter game with shared server counts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}
+
+
+
